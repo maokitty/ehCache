@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.springframework.org/schema/beans
+ http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+    <!-- 引用ehcache的配置 -->
+     <bean id="defaultCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+     	<property name="configLocation" value="classpath:Aop/ehcache.xml"/>
+     </bean>
+     <!-- 定义ehCache -->
+     <bean id="ehCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+        <property name="cacheManager">
+        <ref local="defaultCacheManager"/>
+        </property>
+        <property name="cacheName">
+        	<value>aopCache</value>
+        </property>
+     </bean>
+     
+     <!-- find/create cache拦截器 -->
+     <bean id="methodCacheInterceptor" class="com.own.ehCacheP.intercepter.MethodCacheInterceptor">
+        <property name="cache">
+           <ref local="ehCache"/>
+        </property>
+     </bean>
+     
+     <!-- 后置通知 -->
+     <bean id="methodCacheAfterAdvice" class="com.own.ehCacheP.advice.MethodCacheAfterAdvice">
+     	  <property name="cache">
+           <ref local="ehCache"/>
+        </property>
+     </bean>
+     
+     <!-- 定义查询切点 -->
+     <bean id="cachePointCutr" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice">
+          <ref local="methodCacheInterceptor"/>
+        </property>
+        <property name="patterns">
+          <list>
+             <value>.*get.*</value>
+             <value>.*find.*</value>
+          </list>
+        </property>
+     </bean>
+     <!-- 定义修改的切点 -->
+     <bean id="cachePointCutcud" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+     <!-- 定义通知 -->
+        <property name="advice">
+         <ref local="methodCacheAfterAdvice"/>
+        </property>
+        <!-- 要代理的方法 -->
+        <property name="patterns">
+          <list>
+             <value>.*create.*</value>
+             <value>.*update.*</value>
+             <value>.*delete.*</value>
+          </list>
+        </property>
+     </bean>
+</beans>

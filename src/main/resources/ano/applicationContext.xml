@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:cache="http://www.springframework.org/schema/cache"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://www.springframework.org/schema/cache
+						http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+						http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+    >
+     <context:annotation-config/>
+     <context:component-scan base-package="com.own.ehCacheP.service"/>
+    <!-- 配置freeMarker的模版路径 -->
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer"
+    p:templateLoaderPath="/WEB-INF/ftl"
+    p:defaultEncoding="UTF-8"
+    />
+      <!-- 注解结合ehcache -->
+     
+  <cache:annotation-driven cache-manager="cacheManager"/> 
+    <!--spring cache 像一个桥梁来连接spring 和 ehcache，不需要修改其它的代码 -->
+  <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager" p:cache-manager-ref="ehcache"/> 
+      <!-- spring 的cachemanager 
+      这里是否还有更好的方式解决 ：
+      net sf ehcache cacheexception another unnamed cachemanager already exists in the same vm  ehcache
+      -->
+  <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" p:config-location="classpath:ehcache.xml" p:shared="true"/>
+    
+    
+    
+    
+     <!-- 
+     <bean id="cacheManager" class="org.springframework.cache.support.SimpleCacheManager">  
+    <property name="caches">  
+        <set>  
+            <bean  
+                class="org.springframework.cache.concurrent.ConcurrentCacheFactoryBean"  
+                p:name="default" />  
+            <bean  
+                class="org.springframework.cache.concurrent.ConcurrentCacheFactoryBean"  
+                p:name="andCache" />  
+        </set>  
+    </property>  
+</bean>  
+      -->
+     <!--
+     https://dzone.com/articles/spring-31-caching-and-ehcache
+      关于区分 什么时候使用 simpleCacheManager和使用工厂
+     simpleCacheManager（spring自己的cache）：对于使用比较轻量级(下面这句话不是很理解)
+     (a small in memory cache on a per JVM basis. If the Guys at Spring were running a supermarket 
+     then SimpleCacheManagerwould be in their own brand ‘basics’ product range.)
+     工厂(使用ehcache)： a heavy duty cache, one that’s scalable, persistent and distributed
+     (以及为什么要加 shared＝true)
+     简单的说，这可能是一个bug.... 
+     -->
+</beans>

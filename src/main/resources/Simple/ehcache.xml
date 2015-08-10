@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+      updateCheck="false">  
+    <diskStore path="/Users/liwangchun/Desktop/"/> 
+    <!-- 缓存默认配置，缓存名称为 default --> 
+    <!-- maxElementsInMemory:缓存元素的个数
+         
+           eternal(永恒):缓存是否过期
+         			 Sets whether elements are eternal. If eternal,  timeouts are ignored and the
+    				 element is never expired.
+         timeToIdleSeconds:对象在多长时间没有被访问就会失效
+         timeToLiveSeconds:对象从创建到失效所需要的时间
+        
+         memoryStoreEvictionPolicy:页面调度算法
+         			[Least Recently Used(LRU现有缓存元素中时间戳离当前时间最远的元素将被清出缓存. )
+         			,First In First Out (FIFO)
+         			, Less Frequently Used(LFU,缓存的元素有一个hit 属性,hit 值最小的将会被清出缓存)]
+       
+         maxElementsOnDisk:磁盘上缓存element的最大数目，默认值为0，表示不限制
+         overflowToDisk:内存放满后是否保存到硬盘上
+         详细说明：http://ehcache.org/ehcache.xml
+     -->
+    <defaultCache  
+           maxElementsInMemory="3"  
+           eternal="false"
+           timeToIdleSeconds="2"  
+           timeToLiveSeconds="2"  
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LFU"
+           />  
+    <cache name="simpleCache"  
+           maxElementsInMemory="3"  
+           eternal="false" 
+           timeToLiveSeconds="2" 
+           memoryStoreEvictionPolicy="FIFO"
+           /> 
+</ehcache> 

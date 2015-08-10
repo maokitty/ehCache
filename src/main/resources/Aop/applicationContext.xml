@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:p="http://www.springframework.org/schema/p"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:cache="http://www.springframework.org/schema/cache"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+						http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+						http://www.springframework.org/schema/cache
+						http://www.springframework.org/schema/cache/spring-cache-3.2.xsd
+						http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd"
+    >
+     <context:annotation-config/>
+     <context:component-scan base-package="com.own.ehCacheP.service"/>
+         <!-- 配置freeMarker的模版路径 -->
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer"
+    p:templateLoaderPath="/WEB-INF/ftl"
+    p:defaultEncoding="UTF-8"
+    />
+     <!--  aop结合ehcache-->
+    <import resource="cacheContext.xml"/>
+     <bean id="testServiceTarget" class="com.own.ehCacheP.service.impl.TestServiceImpl"/>
+     <bean id="testService" class="org.springframework.aop.framework.ProxyFactoryBean">
+     <!-- 设置代理目标 -->
+     	<property name="target">
+     		<ref local="testServiceTarget"/>
+     	</property>
+     	<!-- 所有的通知：里面定义相应定义切面以及使用的时间 -->
+     	<property name="interceptorNames">
+     	  <list>
+     	    <value>cachePointCutr</value>
+     	    <value>cachePointCutcud</value>
+     	  </list>
+     	</property>
+     </bean>
+</beans>

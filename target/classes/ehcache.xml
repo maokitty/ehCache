@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
+      updateCheck="false">  
+    <diskStore path="/Users/liwangchun/Desktop/"/> 
+    <defaultCache  
+           maxElementsInMemory="3"  
+           eternal="false"
+           timeToIdleSeconds="2"  
+           timeToLiveSeconds="2"  
+           overflowToDisk="false"
+           memoryStoreEvictionPolicy="LFU"
+           />  
+     <cache name="SimplePageCachingFilter"
+        maxElementsInMemory="1"
+        eternal="false"
+        timeToLiveSeconds="5"
+        memoryStoreEvictionPolicy="LFU"
+     /> 
+</ehcache> 
